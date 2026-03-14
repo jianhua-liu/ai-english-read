@@ -15,8 +15,9 @@ async function generateStoryViaApi(grade: Grade, modelName: string): Promise<{ t
     body: JSON.stringify({ grade, modelName }),
   });
   if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error((err as { error?: string }).error || `API error ${res.status}`);
+    const err = await res.json().catch(() => ({})) as { error?: string; detail?: string };
+    const msg = err.error || err.detail || `API error ${res.status}`;
+    throw new Error(msg);
   }
   return res.json();
 }
@@ -28,8 +29,9 @@ async function translateWordViaApi(word: string): Promise<{ translation: string;
     body: JSON.stringify({ word }),
   });
   if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error((err as { error?: string }).error || `API error ${res.status}`);
+    const err = await res.json().catch(() => ({})) as { error?: string; detail?: string };
+    const msg = err.error || err.detail || `API error ${res.status}`;
+    throw new Error(msg);
   }
   return res.json();
 }
