@@ -63,7 +63,7 @@ exports.main = async (event, context) => {
   const { action, grade, modelName, word } = event || {};
   try {
     if (action === 'generateStory') {
-      const model = modelName || 'gemini-1.5-flash';
+      const model = modelName || 'gemini-2.5-flash';
       const gradeVal = grade || 'Grade 6';
       const prompt = `Create a SHORT English story for ${gradeVal}. Use exactly 3 pages. Each page: 1-2 sentences only. One grammar point per page. Return JSON: {"title":"string","pages":[{"text":"English","translation":"中文","grammarPoint":"中文语法说明"}]}. Keep it very brief.`;
       const schema = {
@@ -102,7 +102,7 @@ Return JSON: { "translation": "中文翻译", "example": "English example senten
         },
         required: ['translation', 'example'],
       };
-      const result = await callGemini('gemini-1.5-flash', prompt, schema);
+      const result = await callGemini('gemini-2.5-flash', prompt, schema);
       return { errMsg: 'ok', data: result };
     }
     return { errMsg: 'Unknown action', data: null };

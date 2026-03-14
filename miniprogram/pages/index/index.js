@@ -2,6 +2,11 @@ const api = require('../../utils/api.js');
 const app = getApp();
 
 const GRADES = ['Grade 6', 'Junior High', 'Senior High'];
+const MODELS = [
+  { label: 'Flash', value: 'gemini-2.5-flash' },
+  { label: 'Pro', value: 'gemini-2.5-pro' },
+  { label: 'Lite', value: 'gemini-2.5-flash-lite' },
+];
 
 function formatDate(ts) {
   const d = new Date(ts);
@@ -12,6 +17,9 @@ Page({
   data: {
     selectedGrade: 'Grade 6',
     grades: GRADES,
+    models: MODELS,
+    selectedModel: MODELS[0].value,
+    modelIndex: 0,
     isGenerating: false,
     status: '',
     books: [],
@@ -29,6 +37,11 @@ Page({
     this.setData({ selectedGrade: e.currentTarget.dataset.grade });
   },
 
+  onModelChange(e) {
+    const i = Number(e.detail.value);
+    this.setData({ modelIndex: i, selectedModel: MODELS[i].value });
+  },
+
   onOpenBook(e) {
     const book = e.currentTarget.dataset.book;
     if (!book) return;
@@ -43,9 +56,9 @@ Page({
   onGenerate() {
     if (this.data.isGenerating) return;
     this.setData({ isGenerating: true, status: '正在生成故事...' });
-    const { selectedGrade } = this.data;
+    const { selectedGrade, selectedModel } = this.data;
 
-    api.generateStory(selectedGrade)
+    api.generateStory(selectedGrade, selectedModel)
       .then((story) => {
         const book = {
           id: Math.random().toString(36).slice(2, 11),
@@ -61,7 +74,8 @@ Page({
         wx.switchTab({ url: '/pages/bookshelf/bookshelf' });
       })
       .catch((err) => {
-        wx.showToast({ title: err.message || '生成失败', icon: 'none' });
+        const msg = err && err.message ? err.message : '生成失败';
+        wx.showModal({ title: '生成失败', content: msg, showCancel: false });
       })
       .finally(() => {
         this.setData({ isGenerating: false, status: '' });

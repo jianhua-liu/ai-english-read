@@ -1,7 +1,7 @@
-// 后端 API 地址。
-// - 留空：使用微信云函数（国内云函数访问 Google 可能超时）。
-// - 填写境外后端地址：可解决超时，需在微信公众平台配置该域名为 request 合法域名。
-// 示例（部署到 Vercel 后）：baseUrl: 'https://你的项目.vercel.app'
+// 后端 API 地址。必须与「网页能成功生成」时打开的地址一致。
+// - 推荐用 Vercel 的稳定域名：https://ai-english-read.vercel.app（在 Vercel 项目 Settings → Domains 可查看）
+// - 不要用带一长串字符的预览地址，易导致 500 或环境变量不一致。
+// - 在微信公众平台把此域名（仅域名，不含 https://）加入 request 合法域名。
 module.exports = {
-  baseUrl: 'https://ai-english-read-b731bvs4c-23053978-qqcoms-projects.vercel.app',
+  baseUrl: 'https://ai-english-read.vercel.app',
 };

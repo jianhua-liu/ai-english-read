@@ -7,11 +7,18 @@ function requestByUrl(url, data) {
       method: 'POST',
       header: { 'Content-Type': 'application/json' },
       data,
+      timeout: 60000,
       success: (res) => {
-        if (res.statusCode >= 200 && res.statusCode < 300) resolve(res.data);
-        else reject(new Error(res.data?.error || '请求失败'));
+        if (res.statusCode >= 200 && res.statusCode < 300) return resolve(res.data);
+        const msg = (res.data && (res.data.error || res.data.detail)) || ('HTTP ' + res.statusCode);
+        reject(new Error(msg));
       },
-      fail: reject,
+      fail: (err) => {
+        let msg = err.errMsg || '网络错误';
+        if (msg.indexOf('url not in domain list') !== -1) msg = '域名未配置：请在微信公众平台把接口域名加入 request 合法域名';
+        if (msg.indexOf('timeout') !== -1) msg = '请求超时，请换 WiFi 或稍后重试';
+        reject(new Error(msg));
+      },
     });
   });
 }
@@ -21,7 +28,7 @@ function generateStory(grade, modelName) {
   if (base) {
     return requestByUrl(base + '/api/generate-story', {
       grade: grade || 'Grade 6',
-      modelName: modelName || 'gemini-1.5-flash',
+      modelName: modelName || 'gemini-2.5-flash',
     });
   }
   return new Promise((resolve, reject) => {
@@ -30,7 +37,7 @@ function generateStory(grade, modelName) {
       data: {
         action: 'generateStory',
         grade: grade || 'Grade 6',
-        modelName: modelName || 'gemini-1.5-flash',
+        modelName: modelName || 'gemini-2.5-flash',
       },
     })
       .then((res) => {

@@ -31,7 +31,7 @@ export default async function handler(req, res) {
   };
 
   try {
-    const data = await callGemini('gemini-1.5-flash', prompt, schema, key);
+    const data = await callGemini('gemini-2.5-flash', prompt, schema, key);
     return res.status(200).json(data);
   } catch (e) {
     console.error(e);

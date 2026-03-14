@@ -2,6 +2,12 @@
   <view class="card" style="padding: 48rpx; margin-bottom: 32rpx;">
     <view class="section-title">创建新故事</view>
     <text class="text-muted" style="font-size: 26rpx; display: block; margin: 24rpx 0 32rpx;">选择年级，生成适合你的英语故事。</text>
+    <view class="model-row">
+      <text class="model-label">大模型</text>
+      <picker mode="selector" range="{{models}}" range-key="label" value="{{modelIndex}}" bindchange="onModelChange" class="model-picker">
+        <view class="model-value">{{models[modelIndex].label}}</view>
+      </picker>
+    </view>
     <view class="grade-row">
       <block wx:for="{{grades}}" wx:key="*this">
         <view

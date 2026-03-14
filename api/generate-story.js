@@ -17,7 +17,7 @@ export default async function handler(req, res) {
   const key = process.env.GEMINI_API_KEY;
   if (!key) return res.status(503).json({ error: 'GEMINI_API_KEY not configured' });
 
-  const { grade = 'Grade 6', modelName = 'gemini-1.5-flash' } = req.body || {};
+  const { grade = 'Grade 6', modelName = 'gemini-2.5-flash' } = req.body || {};
   const prompt = `Create an educational English story for a ${grade} student. Use exactly 5 pages. Each page: 2-4 sentences. One grammar point per page. Return JSON with "title" and "pages" array; each page: "text" (English), "translation" (Chinese), "grammarPoint" (Chinese).`;
   const schema = {
     type: 'object',
