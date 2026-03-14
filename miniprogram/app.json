@@ -1,0 +1,27 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/bookshelf/bookshelf",
+    "pages/vocab/vocab",
+    "pages/profile/profile"
+  ],
+  "window": {
+    "navigationBarTitleText": "AI 英语绘本",
+    "navigationBarBackgroundColor": "#059669",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#fafaf9"
+  },
+  "tabBar": {
+    "color": "#a8a29e",
+    "selectedColor": "#059669",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "创作" },
+      { "pagePath": "pages/bookshelf/bookshelf", "text": "书架" },
+      { "pagePath": "pages/vocab/vocab", "text": "生词本" },
+      { "pagePath": "pages/profile/profile", "text": "我的" }
+    ]
+  },
+  "sitemapLocation": "sitemap.json"
+}

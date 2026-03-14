@@ -1,0 +1,22 @@
+.vocab-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32rpx;
+}
+.section-title { font-size: 36rpx; font-weight: 600; color: #1c1917; }
+.badge { font-size: 24rpx; background: #d1fae5; color: #059669; padding: 8rpx 20rpx; border-radius: 16rpx; font-weight: 600; }
+.vocab-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+}
+.vocab-main { flex: 1; }
+.vocab-word { display: block; font-size: 36rpx; font-weight: 700; color: #059669; margin-bottom: 8rpx; }
+.vocab-trans { font-size: 28rpx; color: #57534e; }
+.vocab-example { display: block; font-size: 24rpx; color: #a8a29e; font-style: italic; margin-top: 16rpx; }
+.vocab-del { color: #a8a29e; font-size: 26rpx; padding: 8rpx; }
+.vocab-del:active { color: #dc2626; }
+.empty { text-align: center; padding: 120rpx 0; }

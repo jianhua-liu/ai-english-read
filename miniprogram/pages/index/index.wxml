@@ -1,0 +1,43 @@
+<view class="container">
+  <view class="card" style="padding: 48rpx; margin-bottom: 32rpx;">
+    <view class="section-title">创建新故事</view>
+    <text class="text-muted" style="font-size: 26rpx; display: block; margin: 24rpx 0 32rpx;">选择年级，生成适合你的英语故事。</text>
+    <view class="grade-row">
+      <block wx:for="{{grades}}" wx:key="*this">
+        <view
+          class="grade-btn {{selectedGrade === item ? 'active' : ''}}"
+          data-grade="{{item}}"
+          bindtap="onGradeTap"
+        >{{item}}</view>
+      </block>
+    </view>
+    <button
+      class="btn-primary"
+      style="width: 100%; height: 96rpx; line-height: 96rpx; margin-top: 32rpx;"
+      disabled="{{isGenerating}}"
+      bindtap="onGenerate"
+    >
+      <block wx:if="{{isGenerating}}">{{status}}</block>
+      <block wx:else>生成英语故事</block>
+    </button>
+  </view>
+  <view class="section-title" style="font-size: 24rpx; color: #a8a29e; margin-bottom: 24rpx;">最近故事</view>
+  <block wx:for="{{books}}" wx:key="id">
+    <view
+      class="card recent-item"
+      style="padding: 32rpx; margin-bottom: 24rpx;"
+      data-book="{{item}}"
+      bindtap="onOpenBook"
+    >
+      <view style="display: flex; align-items: center;">
+        <view class="book-icon"></view>
+        <view style="flex: 1; margin-left: 24rpx;">
+          <text class="book-title">{{item.title}}</text>
+          <text class="text-muted" style="font-size: 22rpx;">{{item.grade}} · {{item.displayDate}}</text>
+        </view>
+        <text class="text-muted">›</text>
+      </view>
+    </view>
+  </block>
+  <view wx:if="{{books.length === 0}}" class="text-muted" style="text-align: center; padding: 60rpx;">暂无故事，去创作一个吧</view>
+</view>

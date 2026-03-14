@@ -1,0 +1,7 @@
+{
+  "name": "englishApi",
+  "version": "1.0.0",
+  "description": "生成故事与翻译单词",
+  "main": "index.js",
+  "dependencies": {}
+}

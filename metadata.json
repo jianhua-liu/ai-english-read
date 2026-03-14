@@ -1,0 +1,5 @@
+{
+  "name": "AI 英语绘本生成器",
+  "description": "根据年级自动生成英语绘本故事及配图，助力英语学习。",
+  "requestFramePermissions": []
+}

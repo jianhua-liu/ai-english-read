@@ -1,0 +1,17 @@
+<view class="container">
+  <view class="card profile-card">
+    <view class="avatar"></view>
+    <text class="profile-name">英语学习者</text>
+    <text class="text-muted">继续加油！</text>
+  </view>
+  <view class="stats">
+    <view class="card stat-item">
+      <text class="stat-num">{{bookCount}}</text>
+      <text class="stat-label">已读故事</text>
+    </view>
+    <view class="card stat-item">
+      <text class="stat-num">{{vocabCount}}</text>
+      <text class="stat-label">已学单词</text>
+    </view>
+  </view>
+</view>

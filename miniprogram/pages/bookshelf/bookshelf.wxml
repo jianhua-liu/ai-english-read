@@ -1,0 +1,70 @@
+<view class="container">
+  <block wx:if="{{readingBook}}">
+    <view class="card reader-card">
+      <view class="reader-header">
+        <view class="nav-btn" bindtap="onBack">‹ 返回</view>
+        <view class="page-nav">
+          <view class="nav-btn {{currentPage === 0 ? 'disabled' : ''}}" bindtap="onPrev">‹</view>
+          <text class="page-num">{{currentPage + 1}} / {{readingBook.pages.length}}</text>
+          <view class="nav-btn {{currentPage >= readingBook.pages.length - 1 ? 'disabled' : ''}}" bindtap="onNext">›</view>
+        </view>
+        <view style="width: 80rpx;"></view>
+      </view>
+      <view class="reader-body">
+        <view class="story-title">{{readingBook.title}}</view>
+        <view class="page-text">
+          <block wx:for="{{readingBook.pages[currentPage].text.split(' ')}}" wx:key="*this">
+            <text class="word" data-word="{{item}}" bindtap="onWordTap">{{item}} </text>
+          </block>
+        </view>
+        <view class="translation">{{readingBook.pages[currentPage].translation}}</view>
+        <view class="grammar-box">
+          <view class="grammar-title">语法重点</view>
+          <text>{{readingBook.pages[currentPage].grammarPoint}}</text>
+        </view>
+        <view class="dots">
+          <block wx:for="{{readingBook.pages}}" wx:key="*this">
+            <view class="dot {{index === currentPage ? 'active' : ''}}"></view>
+          </block>
+        </view>
+      </view>
+    </view>
+  </block>
+  <block wx:else>
+    <view class="book-grid">
+      <block wx:for="{{books}}" wx:key="id">
+        <view class="card book-item" data-book="{{item}}" bindtap="onBookTap">
+          <view class="book-icon"></view>
+          <text class="book-title">{{item.title}}</text>
+          <text class="text-muted" style="font-size: 22rpx;">{{item.grade}}</text>
+        </view>
+      </block>
+    </view>
+    <view wx:if="{{books.length === 0}}" class="empty">
+      <text class="text-muted">还没有书，去创作一个吧</text>
+    </view>
+  </block>
+</view>
+
+<view class="loading-mask" wx:if="{{isTranslating}}">
+  <view class="loading-box">翻译中...</view>
+</view>
+
+<view class="word-modal" wx:if="{{selectedWord}}" catchtap="onCloseWord">
+  <view class="word-content" catchtap="">
+    <view class="word-header">
+      <view>
+        <text class="word-big">{{selectedWord.word}}</text>
+        <text class="word-trans">{{selectedWord.translation}}</text>
+      </view>
+      <view class="word-actions">
+        <button class="btn-primary" style="padding: 16rpx 32rpx; font-size: 26rpx;" bindtap="onAddToVocab">加入生词本</button>
+        <view bindtap="onCloseWord" style="padding: 16rpx;">关闭</view>
+      </view>
+    </view>
+    <view class="example-box">
+      <text class="example-label">例句</text>
+      <text class="example-text">"{{selectedWord.example}}"</text>
+    </view>
+  </view>
+</view>
