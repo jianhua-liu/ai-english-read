@@ -1,5 +1,6 @@
 const api = require('../../utils/api.js');
 const app = getApp();
+const { normalizePages } = require('../../utils/bookHelper.js');
 
 const GRADES = ['Grade 6', 'Junior High', 'Senior High'];
 const MODELS = [
@@ -43,12 +44,13 @@ Page({
   },
 
   onOpenBook(e) {
-    const book = e.currentTarget.dataset.book;
-    if (!book) return;
+    const id = e.currentTarget.dataset.id;
+    const book = id ? (app.globalData.books || []).find((b) => b.id === id) : e.currentTarget.dataset.book;
+    if (!book || !book.pages) return;
     const pages = getCurrentPages();
     const bookshelf = pages.find((p) => p.route === 'pages/bookshelf/bookshelf');
-    if (bookshelf) {
-      bookshelf.setData({ readingBook: book, currentPage: 0 });
+    if (bookshelf && typeof bookshelf.setReadingBook === 'function') {
+      bookshelf.setReadingBook(book, 0);
     }
     wx.switchTab({ url: '/pages/bookshelf/bookshelf' });
   },
@@ -64,7 +66,7 @@ Page({
           id: Math.random().toString(36).slice(2, 11),
           title: story.title,
           grade: selectedGrade,
-          pages: story.pages,
+          pages: normalizePages(story.pages || []),
           createdAt: Date.now(),
         };
         const books = [book, ...app.globalData.books];

@@ -1,34 +1,31 @@
 const app = getApp();
 const api = require('../../utils/api.js');
-
-function hasCJK(s) {
-  return typeof s === 'string' && /[\u4e00-\u9fff]/.test(s);
-}
-function normalizeBook(book) {
-  if (!book || !book.pages || !Array.isArray(book.pages)) return book;
-  const pages = book.pages.map((p) => {
-    let text = (p && p.text) || '';
-    let translation = (p && p.translation) || '';
-    if (!text && translation && !hasCJK(translation)) {
-      text = translation;
-      translation = '';
-    } else if (hasCJK(text) && translation && !hasCJK(translation)) {
-      const t = text;
-      text = translation;
-      translation = t;
-    }
-    return { ...p, text: text || p.text, translation: translation || p.translation };
-  });
-  return { ...book, pages };
-}
+const { normalizeBook } = require('../../utils/bookHelper.js');
 
 Page({
   data: {
     books: [],
     readingBook: null,
     currentPage: 0,
+    currentPageText: '',
+    currentPageTranslation: '',
+    currentPageGrammar: '',
     selectedWord: null,
     isTranslating: false,
+  },
+
+  setReadingBook(book, pageIndex) {
+    const normalized = normalizeBook(book);
+    const idx = Math.max(0, Math.min(pageIndex || 0, (normalized.pages && normalized.pages.length) ? normalized.pages.length - 1 : 0));
+    const page = (normalized.pages && normalized.pages[idx]) || {};
+    this.setData({
+      readingBook: normalized,
+      currentPage: idx,
+      currentPageText: page.text || '',
+      currentPageTranslation: page.translation || '',
+      currentPageGrammar: page.grammarPoint || '',
+      selectedWord: null,
+    });
   },
 
   onShow() {
@@ -36,31 +33,51 @@ Page({
     const pending = app.globalData.pendingReadingBook;
     if (pending) {
       app.globalData.pendingReadingBook = null;
-      this.setData({ books, readingBook: normalizeBook(pending), currentPage: 0 });
+      this.setReadingBook(pending, 0);
+      this.setData({ books });
     } else {
       this.setData({ books });
     }
   },
 
   onBookTap(e) {
-    const book = e.currentTarget.dataset.book;
-    this.setData({ readingBook: normalizeBook(book), currentPage: 0 });
+    const id = e.currentTarget.dataset.id;
+    const books = this.data.books.length ? this.data.books : (app.globalData.books || []);
+    const book = typeof id === 'string' ? books.find((b) => b.id === id) : null;
+    if (!book || !book.pages || !book.pages.length) return;
+    this.setReadingBook(book, 0);
   },
 
   onBack() {
-    this.setData({ readingBook: null, selectedWord: null });
+    this.setData({ readingBook: null, currentPageText: '', currentPageTranslation: '', currentPageGrammar: '', selectedWord: null });
   },
 
   onPrev() {
-    const { currentPage } = this.data;
-    if (currentPage > 0) this.setData({ currentPage: currentPage - 1, selectedWord: null });
+    const { readingBook, currentPage } = this.data;
+    if (!readingBook || !readingBook.pages || currentPage <= 0) return;
+    const idx = currentPage - 1;
+    const page = readingBook.pages[idx] || {};
+    this.setData({
+      currentPage: idx,
+      currentPageText: page.text || '',
+      currentPageTranslation: page.translation || '',
+      currentPageGrammar: page.grammarPoint || '',
+      selectedWord: null,
+    });
   },
 
   onNext() {
     const { readingBook, currentPage } = this.data;
-    if (readingBook && currentPage < readingBook.pages.length - 1) {
-      this.setData({ currentPage: currentPage + 1, selectedWord: null });
-    }
+    if (!readingBook || !readingBook.pages || currentPage >= readingBook.pages.length - 1) return;
+    const idx = currentPage + 1;
+    const page = readingBook.pages[idx] || {};
+    this.setData({
+      currentPage: idx,
+      currentPageText: page.text || '',
+      currentPageTranslation: page.translation || '',
+      currentPageGrammar: page.grammarPoint || '',
+      selectedWord: null,
+    });
   },
 
   onWordTap(e) {
