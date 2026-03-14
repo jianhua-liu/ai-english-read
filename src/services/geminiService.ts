@@ -1,9 +1,12 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { Grade } from "../types";
 
-const apiBase = typeof import.meta !== "undefined" && import.meta.env?.VITE_API_URL
-  ? (import.meta.env.VITE_API_URL as string).replace(/\/$/, "")
-  : "";
+const envUrl = typeof import.meta !== "undefined" && import.meta.env?.VITE_API_URL;
+const apiBase = envUrl
+  ? (envUrl as string).replace(/\/$/, "")
+  : typeof window !== "undefined"
+    ? window.location.origin
+    : "";
 
 async function generateStoryViaApi(grade: Grade, modelName: string): Promise<{ title: string; pages: { text: string; translation: string; grammarPoint: string }[] }> {
   const res = await fetch(`${apiBase}/api/generate-story`, {

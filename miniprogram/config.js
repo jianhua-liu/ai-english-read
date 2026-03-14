@@ -3,5 +3,5 @@
 // - 填写境外后端地址：可解决超时，需在微信公众平台配置该域名为 request 合法域名。
 // 示例（部署到 Vercel 后）：baseUrl: 'https://你的项目.vercel.app'
 module.exports = {
-  baseUrl: '',
+  baseUrl: 'https://ai-english-read-b731bvs4c-23053978-qqcoms-projects.vercel.app',
 };
