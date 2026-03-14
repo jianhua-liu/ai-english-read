@@ -12,12 +12,17 @@
       </view>
       <view class="reader-body">
         <view class="story-title">{{readingBook.title}}</view>
+        <view class="section-label">英文</view>
         <view class="page-text">
-          <block wx:for="{{readingBook.pages[currentPage].text.split(' ')}}" wx:key="*this">
-            <text class="word" data-word="{{item}}" bindtap="onWordTap">{{item}} </text>
+          <block wx:if="{{readingBook.pages[currentPage].text}}">
+            <block wx:for="{{readingBook.pages[currentPage].text.split(' ')}}" wx:key="*this">
+              <text class="word" data-word="{{item}}" bindtap="onWordTap">{{item}} </text>
+            </block>
           </block>
+          <text wx:else class="text-muted">（无英文内容）</text>
         </view>
-        <view class="translation">{{readingBook.pages[currentPage].translation}}</view>
+        <view class="section-label">中文</view>
+        <view class="translation">{{readingBook.pages[currentPage].translation || '（无）'}}</view>
         <view class="grammar-box">
           <view class="grammar-title">语法重点</view>
           <text>{{readingBook.pages[currentPage].grammarPoint}}</text>

@@ -65,7 +65,11 @@ exports.main = async (event, context) => {
     if (action === 'generateStory') {
       const model = modelName || 'gemini-2.5-flash';
       const gradeVal = grade || 'Grade 6';
-      const prompt = `Create a SHORT English story for ${gradeVal}. Use exactly 3 pages. Each page: 1-2 sentences only. One grammar point per page. Return JSON: {"title":"string","pages":[{"text":"English","translation":"中文","grammarPoint":"中文语法说明"}]}. Keep it very brief.`;
+      const prompt = `Create a SHORT English story for ${gradeVal}. Use exactly 3 pages. Each page: 1-2 sentences in ENGLISH only. One grammar point per page (in Chinese).
+
+IMPORTANT: Return JSON: {"title":"English title","pages":[{"text":"English sentences here","translation":"中文翻译","grammarPoint":"中文语法说明"}]}.
+- "text" must be the English story content only. Do NOT put Chinese in "text".
+- "translation" must be the Chinese translation of "text". Keep it very brief.`;
       const schema = {
         type: 'object',
         properties: {

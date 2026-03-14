@@ -18,7 +18,14 @@ export default async function handler(req, res) {
   if (!key) return res.status(503).json({ error: 'GEMINI_API_KEY not configured' });
 
   const { grade = 'Grade 6', modelName = 'gemini-2.5-flash' } = req.body || {};
-  const prompt = `Create an educational English story for a ${grade} student. Use exactly 5 pages. Each page: 2-4 sentences. One grammar point per page. Return JSON with "title" and "pages" array; each page: "text" (English), "translation" (Chinese), "grammarPoint" (Chinese).`;
+  const prompt = `Create an educational English story for a ${grade} student. Use exactly 5 pages. Each page: 2-4 sentences in English. One grammar point per page (in Chinese).
+
+IMPORTANT: Return JSON with "title" (English) and "pages" array. Each page must have:
+- "text": the English sentences ONLY (the story content in English).
+- "translation": the Chinese translation of "text" ONLY.
+- "grammarPoint": short grammar note in Chinese.
+
+Do not put Chinese in "text". "text" must be English.`;
   const schema = {
     type: 'object',
     properties: {

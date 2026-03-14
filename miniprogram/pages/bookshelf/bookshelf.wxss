@@ -21,6 +21,13 @@
   text-transform: uppercase;
   letter-spacing: 2rpx;
 }
+.section-label {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #059669;
+  margin-bottom: 12rpx;
+  letter-spacing: 1rpx;
+}
 .page-text {
   font-size: 36rpx;
   line-height: 1.8;
