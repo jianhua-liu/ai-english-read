@@ -1,4 +1,4 @@
-const https = require('https');
+import https from 'https';
 
 const GEMINI_BASE = 'generativelanguage.googleapis.com';
 
@@ -24,7 +24,7 @@ function request(options, postData) {
   });
 }
 
-async function callGemini(model, prompt, schema, apiKey) {
+export async function callGemini(model, prompt, schema, apiKey) {
   if (!apiKey) throw new Error('GEMINI_API_KEY not configured');
   const path = `/v1beta/models/${model}:generateContent?key=${apiKey}`;
   const body = {
@@ -46,5 +46,3 @@ async function callGemini(model, prompt, schema, apiKey) {
   if (!text) throw new Error('Empty response from Gemini');
   return JSON.parse(text);
 }
-
-module.exports = { callGemini };

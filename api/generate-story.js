@@ -1,4 +1,4 @@
-const { callGemini } = require('./lib/gemini.js');
+import { callGemini } from './lib/gemini.js';
 
 const cors = (res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -6,7 +6,7 @@ const cors = (res) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 };
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method === 'OPTIONS') {
     cors(res);
     return res.status(204).end();
@@ -47,4 +47,4 @@ module.exports = async (req, res) => {
     const msg = e.message || 'Generate failed';
     return res.status(500).json({ error: msg, detail: String(e) });
   }
-};
+}
