@@ -19,7 +19,7 @@
               <text class="word" data-word="{{item}}" bindtap="onWordTap">{{item}} </text>
             </block>
           </block>
-          <text wx:else class="text-muted">（无英文内容）</text>
+          <text wx:else class="text-muted">（无英文内容，请重新生成该故事）</text>
         </view>
         <view class="section-label">中文</view>
         <view class="translation">{{readingBook.pages[currentPage].translation || '（无）'}}</view>

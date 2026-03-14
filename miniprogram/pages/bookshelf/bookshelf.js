@@ -1,6 +1,27 @@
 const app = getApp();
 const api = require('../../utils/api.js');
 
+function hasCJK(s) {
+  return typeof s === 'string' && /[\u4e00-\u9fff]/.test(s);
+}
+function normalizeBook(book) {
+  if (!book || !book.pages || !Array.isArray(book.pages)) return book;
+  const pages = book.pages.map((p) => {
+    let text = (p && p.text) || '';
+    let translation = (p && p.translation) || '';
+    if (!text && translation && !hasCJK(translation)) {
+      text = translation;
+      translation = '';
+    } else if (hasCJK(text) && translation && !hasCJK(translation)) {
+      const t = text;
+      text = translation;
+      translation = t;
+    }
+    return { ...p, text: text || p.text, translation: translation || p.translation };
+  });
+  return { ...book, pages };
+}
+
 Page({
   data: {
     books: [],
@@ -15,7 +36,7 @@ Page({
     const pending = app.globalData.pendingReadingBook;
     if (pending) {
       app.globalData.pendingReadingBook = null;
-      this.setData({ books, readingBook: pending, currentPage: 0 });
+      this.setData({ books, readingBook: normalizeBook(pending), currentPage: 0 });
     } else {
       this.setData({ books });
     }
@@ -23,7 +44,7 @@ Page({
 
   onBookTap(e) {
     const book = e.currentTarget.dataset.book;
-    this.setData({ readingBook: book, currentPage: 0 });
+    this.setData({ readingBook: normalizeBook(book), currentPage: 0 });
   },
 
   onBack() {

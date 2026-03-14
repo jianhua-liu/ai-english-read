@@ -46,8 +46,27 @@ Do not put Chinese in "text". "text" must be English.`;
     required: ['title', 'pages'],
   };
 
+  function hasCJK(s) {
+    return typeof s === 'string' && /[\u4e00-\u9fff]/.test(s);
+  }
+  function normalizePages(pages) {
+    if (!Array.isArray(pages)) return pages;
+    return pages.map((p) => {
+      let text = (p && p.text) || '';
+      let translation = (p && p.translation) || '';
+      if (!text && translation && !hasCJK(translation)) {
+        text = translation;
+        translation = '';
+      } else if (hasCJK(text) && translation && !hasCJK(translation)) {
+        [text, translation] = [translation, text];
+      }
+      return { ...p, text: text || p.text, translation: translation || p.translation };
+    });
+  }
+
   try {
     const data = await callGemini(modelName, prompt, schema, key);
+    if (data && data.pages) data.pages = normalizePages(data.pages);
     return res.status(200).json(data);
   } catch (e) {
     console.error('generate-story error:', e);

@@ -90,6 +90,22 @@ IMPORTANT: Return JSON: {"title":"English title","pages":[{"text":"English sente
         required: ['title', 'pages'],
       };
       const result = await callGemini(model, prompt, schema);
+      if (result && result.pages) {
+        function hasCJK(s) { return typeof s === 'string' && /[\u4e00-\u9fff]/.test(s); }
+        result.pages = result.pages.map(function (p) {
+          var text = (p && p.text) || '';
+          var translation = (p && p.translation) || '';
+          if (!text && translation && !hasCJK(translation)) {
+            text = translation;
+            translation = '';
+          } else if (hasCJK(text) && translation && !hasCJK(translation)) {
+            var t = text;
+            text = translation;
+            translation = t;
+          }
+          return Object.assign({}, p, { text: text || p.text, translation: translation || p.translation });
+        });
+      }
       return { errMsg: 'ok', data: result };
     }
     if (action === 'translateWord') {
