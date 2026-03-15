@@ -62,11 +62,12 @@ Page({
 
     api.generateStory(selectedGrade, selectedModel)
       .then((story) => {
+        const rawPages = story && (story.pages || (story.data && story.data.pages) || (story.result && story.result.pages)) || [];
         const book = {
           id: Math.random().toString(36).slice(2, 11),
-          title: story.title,
+          title: (story && story.title) || (story && story.data && story.data.title) || 'Untitled',
           grade: selectedGrade,
-          pages: normalizePages(story.pages || []),
+          pages: normalizePages(Array.isArray(rawPages) ? rawPages : []),
           createdAt: Date.now(),
         };
         const books = [book, ...app.globalData.books];

@@ -92,12 +92,25 @@ IMPORTANT: Return JSON: {"title":"English title","pages":[{"text":"English sente
       const result = await callGemini(model, prompt, schema);
       if (result && result.pages) {
         function hasCJK(s) { return typeof s === 'string' && /[\u4e00-\u9fff]/.test(s); }
+        function extractEn(str) {
+          if (typeof str !== 'string' || !str.trim()) return '';
+          var s = str.trim();
+          var i = s.search(/[\u4e00-\u9fff]/);
+          if (i < 0) return s;
+          var before = s.slice(0, i).trim();
+          return before.length >= 2 ? before : '';
+        }
         result.pages = result.pages.map(function (p) {
-          var text = (p && p.text) || '';
-          var translation = (p && p.translation) || '';
-          if (!text && translation && !hasCJK(translation)) {
-            text = translation;
-            translation = '';
+          var text = (p && p.text) != null ? String(p.text).trim() : '';
+          var translation = (p && p.translation) != null ? String(p.translation).trim() : '';
+          if (!text && translation) {
+            if (!hasCJK(translation)) {
+              text = translation;
+              translation = (p && p.text) != null ? String(p.text).trim() : '';
+            } else {
+              var en = extractEn(translation);
+              if (en) text = en;
+            }
           } else if (hasCJK(text) && translation && !hasCJK(translation)) {
             var t = text;
             text = translation;

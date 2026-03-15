@@ -18,10 +18,16 @@ Page({
     const normalized = normalizeBook(book);
     const idx = Math.max(0, Math.min(pageIndex || 0, (normalized.pages && normalized.pages.length) ? normalized.pages.length - 1 : 0));
     const page = (normalized.pages && normalized.pages[idx]) || {};
+    let showText = (page.text != null && page.text !== '') ? String(page.text).trim() : '';
+    if (!showText && page.translation && /[a-zA-Z]{2,}/.test(page.translation)) {
+      showText = String(page.translation).trim();
+    }
+    if (!showText && (page.content != null && page.content !== '')) showText = String(page.content).trim();
+    if (!showText && (page.english != null && page.english !== '')) showText = String(page.english).trim();
     this.setData({
       readingBook: normalized,
       currentPage: idx,
-      currentPageText: page.text || '',
+      currentPageText: showText,
       currentPageTranslation: page.translation || '',
       currentPageGrammar: page.grammarPoint || '',
       selectedWord: null,
@@ -52,6 +58,15 @@ Page({
     this.setData({ readingBook: null, currentPageText: '', currentPageTranslation: '', currentPageGrammar: '', selectedWord: null });
   },
 
+  _pageShowText(page) {
+    const t = (page && page.text != null && page.text !== '') ? String(page.text).trim() : '';
+    if (t) return t;
+    if (page && page.translation && /[a-zA-Z]{2,}/.test(page.translation)) return String(page.translation).trim();
+    if (page && page.content != null && page.content !== '') return String(page.content).trim();
+    if (page && page.english != null && page.english !== '') return String(page.english).trim();
+    return '';
+  },
+
   onPrev() {
     const { readingBook, currentPage } = this.data;
     if (!readingBook || !readingBook.pages || currentPage <= 0) return;
@@ -59,7 +74,7 @@ Page({
     const page = readingBook.pages[idx] || {};
     this.setData({
       currentPage: idx,
-      currentPageText: page.text || '',
+      currentPageText: this._pageShowText(page),
       currentPageTranslation: page.translation || '',
       currentPageGrammar: page.grammarPoint || '',
       selectedWord: null,
@@ -73,7 +88,7 @@ Page({
     const page = readingBook.pages[idx] || {};
     this.setData({
       currentPage: idx,
-      currentPageText: page.text || '',
+      currentPageText: this._pageShowText(page),
       currentPageTranslation: page.translation || '',
       currentPageGrammar: page.grammarPoint || '',
       selectedWord: null,

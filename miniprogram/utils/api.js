@@ -9,9 +9,18 @@ function requestByUrl(url, data) {
       data,
       timeout: 90000,
       success: (res) => {
-        if (res.statusCode >= 200 && res.statusCode < 300) return resolve(res.data);
-        const msg = (res.data && (res.data.error || res.data.detail)) || ('HTTP ' + res.statusCode);
-        reject(new Error(msg));
+        if (res.statusCode < 200 || res.statusCode >= 300) {
+          const msg = (res.data && (res.data.error || res.data.detail)) || ('HTTP ' + res.statusCode);
+          return reject(new Error(msg));
+        }
+        let data = res.data;
+        if (typeof data === 'string') {
+          try { data = JSON.parse(data); } catch (e) { return reject(new Error('Invalid JSON')); }
+        }
+        if (data && data.data && (data.data.title != null || data.data.pages)) {
+          data = data.data;
+        }
+        resolve(data);
       },
       fail: (err) => {
         let msg = err.errMsg || '网络错误';

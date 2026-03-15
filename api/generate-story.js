@@ -49,18 +49,31 @@ Do not put Chinese in "text". "text" must be English.`;
   function hasCJK(s) {
     return typeof s === 'string' && /[\u4e00-\u9fff]/.test(s);
   }
+  function extractEnglishFromMixed(str) {
+    if (typeof str !== 'string' || !str.trim()) return '';
+    const s = str.trim();
+    const i = s.search(/[\u4e00-\u9fff]/);
+    if (i < 0) return s;
+    const before = s.slice(0, i).trim();
+    return before.length >= 2 ? before : '';
+  }
   function normalizePages(pages) {
     if (!Array.isArray(pages)) return pages;
     return pages.map((p) => {
-      let text = (p && p.text) || '';
-      let translation = (p && p.translation) || '';
-      if (!text && translation && !hasCJK(translation)) {
-        text = translation;
-        translation = '';
+      let text = (p && p.text) != null ? String(p.text).trim() : '';
+      let translation = (p && p.translation) != null ? String(p.translation).trim() : '';
+      if (!text && translation) {
+        if (!hasCJK(translation)) {
+          text = translation;
+          translation = (p && p.text) != null ? String(p.text).trim() : '';
+        } else {
+          const en = extractEnglishFromMixed(translation);
+          if (en) text = en;
+        }
       } else if (hasCJK(text) && translation && !hasCJK(translation)) {
         [text, translation] = [translation, text];
       }
-      return { ...p, text: text || p.text, translation: translation || p.translation };
+      return { ...p, text: text || (p && p.text), translation: translation || (p && p.translation) };
     });
   }
 

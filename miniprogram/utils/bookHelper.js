@@ -5,14 +5,28 @@ function isEmpty(s) {
   return s == null || (typeof s === 'string' && !s.trim());
 }
 
+function extractEnglishFromMixed(str) {
+  if (typeof str !== 'string' || !str.trim()) return '';
+  const s = str.trim();
+  const i = s.search(/[\u4e00-\u9fff]/);
+  if (i < 0) return s;
+  const before = s.slice(0, i).trim();
+  return before.length >= 2 ? before : '';
+}
+
 function normalizePages(pages) {
   if (!pages || !Array.isArray(pages)) return pages || [];
   return pages.map((p) => {
-    let text = (p && p.text) != null ? String(p.text).trim() : '';
+    let text = (p && (p.text ?? p.content ?? p.english)) != null ? String(p.text ?? p.content ?? p.english).trim() : '';
     let translation = (p && p.translation) != null ? String(p.translation).trim() : '';
-    if (isEmpty(text) && translation && !hasCJK(translation)) {
-      text = translation;
-      translation = (p && p.text) != null ? String(p.text).trim() : '';
+    if (isEmpty(text) && translation) {
+      if (!hasCJK(translation)) {
+        text = translation;
+        translation = (p && p.text) != null ? String(p.text).trim() : '';
+      } else {
+        const en = extractEnglishFromMixed(translation);
+        if (en) text = en;
+      }
     } else if (hasCJK(text) && translation && !hasCJK(translation)) {
       const t = text;
       text = translation;
